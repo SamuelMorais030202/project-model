@@ -1,7 +1,28 @@
-import { Button, Input } from "@mui/material";
+'use client'
+
+import { Button, TextField } from "@mui/material";
 import Link from "next/link";
 
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const signInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+});
+
+type SignInFormData = z.infer<typeof signInSchema>;
+
 export default function SignIn() {
+  const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema)
+  });
+
+  function accessInternalArea(data: SignInFormData) {
+    console.log(data);
+  }
+
   return (
     <div>
       <div className="p-8">
@@ -19,26 +40,22 @@ export default function SignIn() {
           </div>
         </div>
 
-        <form className="flex flex-col gap-5 mt-4">
-          <div className="space-y-1">
-            <label htmlFor="email">Seu e-mail</label>
-            <Input
-              id="emai"
-              type="email"
-              className="w-full"
-              placeholder="e-mail"
-            />
-          </div>
+        <form className="flex flex-col gap-5 mt-4" onSubmit={handleSubmit(accessInternalArea)}>
+          <TextField
+            label="E-mail"
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            fullWidth
+          />
 
-          <div className="space-y-1">
-            <label htmlFor="email">Sua senha</label>
-            <Input
-              id="emai"
-              type="email"
-              className="w-full"
-              placeholder="senha"
-            />
-          </div>
+          <TextField
+            label="Senha"
+            {...register("password")}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            fullWidth
+          />
 
           <Button
             fullWidth
