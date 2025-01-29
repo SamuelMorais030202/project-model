@@ -19,8 +19,16 @@ export default function SignIn() {
     resolver: zodResolver(signInSchema)
   });
 
-  function accessInternalArea(data: SignInFormData) {
+  async function accessInternalArea(data: SignInFormData) {
     console.log(data);
+
+    const response = await fetch('/api/auth/sign-in', {
+      method: 'POST',
+      body: JSON.stringify({ email: data.email, password: data.password }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    console.log(response);
   }
 
   return (
@@ -60,6 +68,7 @@ export default function SignIn() {
           <Button
             fullWidth
             className="!bg-primary !text-muted !mt-3"
+            type="submit"
           >
             Acessar
           </Button>
